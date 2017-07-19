@@ -2,6 +2,11 @@
 // Date: 03/29/2017
 // Description: Pmod AD1 - AD7476A SPI ADC - Teensy 3.2 Code
 
+//Edited: Taringana Guranungo 
+//Date: 07/17/2017
+//Description: Breathing Rate counter for a PZT circuit
+
+
 #include <SPI.h>
 
 /* -------------------------------------------------------------------- */
@@ -18,32 +23,11 @@ int timewaiting;
 char Handshake=0;
 char oneCount=0;
 
-
-//const int CSPin   = 10;
-//const int MOSIPin = 11;
- int data_in = analogRead(A14);
-//const int SCKPin  = 14;
+int data_in = analogRead(A14);
 
 int led = 13;
 int red = 31;
 int green = 32;
-
-// SPI Settings: speed, mode and endianness
-SPISettings settings(1000000, MSBFIRST, SPI_MODE2);  // 1MHz, MSB, 
-
-
-//int getADC(){
-//    int data, data_LB, data_HB;
-//
-//    SPI.beginTransaction(settings);
-//    digitalWrite(CSPin,LOW);
-//    data_HB = SPI.transfer(0);
-//    data_LB = SPI.transfer(0);
-//    data =  (data_HB << 8) | data_LB; 
-//    digitalWrite(CSPin,HIGH);
-//    SPI.endTransaction();
-//    return data;
-//}
 
 void setup(){
     pinMode(led, OUTPUT);
@@ -51,15 +35,7 @@ void setup(){
     pinMode(green, OUTPUT);
     pinMode(A14, INPUT);
   
-    //pinMode(CSPin, OUTPUT);
     Serial.begin(9600);
-
-    // Configure SPI Pins
-//    SPI.begin();
-//    SPI.setMISO(MISOPin);
-//    SPI.setMOSI(MOSIPin);
-//    SPI.setSCK(SCKPin);
-
 }
 
 
@@ -91,20 +67,7 @@ void loop()
         Serial.flush();
         timewaiting++;
     }
-
-    
-   //uncomment if using matlab
-//   if (timewaiting < 70){ 
-      Handshake = 1;
-//    }else{
-//      for (n=0; n<5; n=n+1){
-//        digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-//        delay(50);               // wait for a second
-//        digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-//        delay(50);               // wait for a second        
-//      }
-//      Serial.end(); Serial.begin(9600);  // reset the port
-//    }
+    Handshake = 1;
   }
   while (!oneCount){
       //read into datBuf
@@ -135,7 +98,7 @@ void loop()
      }
      
      //print the breath count
-      Serial.print("Breath rate is:");
+      Serial.print("BREATH RATE IS:");
       Serial.println(breath);
   
       if (breath > 20)
@@ -145,15 +108,6 @@ void loop()
       oneCount = 1;
   }
   
-  //transmit
-//  digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  for (n = 0; n < BUFFLENGTH; n=n+1){
-//    sprintf(sMsg, "%u", datBuf[n]); // format text to be displayed
-//    Serial.println(sMsg);  // display text on serial monitor    
-//    Serial.flush();    
-//   }
-//  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW   
-  Handshake = 1;
 }
 
 
