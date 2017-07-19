@@ -19,10 +19,10 @@ char Handshake=0;
 char oneCount=0;
 
 
-const int CSPin   = 10;
-const int MOSIPin = 11;
-const int MISOPin = 12;
-const int SCKPin  = 14;
+//const int CSPin   = 10;
+//const int MOSIPin = 11;
+ int data_in = analogRead(A14);
+//const int SCKPin  = 14;
 
 int led = 13;
 int red = 31;
@@ -32,32 +32,33 @@ int green = 32;
 SPISettings settings(1000000, MSBFIRST, SPI_MODE2);  // 1MHz, MSB, 
 
 
-int getADC(){
-    int data, data_LB, data_HB;
-
-    SPI.beginTransaction(settings);
-    digitalWrite(CSPin,LOW);
-    data_HB = SPI.transfer(0);
-    data_LB = SPI.transfer(0);
-    data =  (data_HB << 8) | data_LB; 
-    digitalWrite(CSPin,HIGH);
-    SPI.endTransaction();
-    return data;
-}
+//int getADC(){
+//    int data, data_LB, data_HB;
+//
+//    SPI.beginTransaction(settings);
+//    digitalWrite(CSPin,LOW);
+//    data_HB = SPI.transfer(0);
+//    data_LB = SPI.transfer(0);
+//    data =  (data_HB << 8) | data_LB; 
+//    digitalWrite(CSPin,HIGH);
+//    SPI.endTransaction();
+//    return data;
+//}
 
 void setup(){
     pinMode(led, OUTPUT);
     pinMode(red, OUTPUT);
     pinMode(green, OUTPUT);
+    pinMode(A14, INPUT);
   
-    pinMode(CSPin, OUTPUT);
+    //pinMode(CSPin, OUTPUT);
     Serial.begin(9600);
 
     // Configure SPI Pins
-    SPI.begin();
-    SPI.setMISO(MISOPin);
-    SPI.setMOSI(MOSIPin);
-    SPI.setSCK(SCKPin);
+//    SPI.begin();
+//    SPI.setMISO(MISOPin);
+//    SPI.setMOSI(MOSIPin);
+//    SPI.setSCK(SCKPin);
 
 }
 
@@ -108,11 +109,14 @@ void loop()
   while (!oneCount){
       //read into datBuf
     for (n = 0; n < BUFFLENGTH; n=n+1){
-      datBuf[n] = getADC();  // read physical value
+      //datBuf[n] = getADC();  // read physical value
+      datBuf[n] = analogRead(A14);
+      Serial.println(datBuf[n]);
+      Serial.flush();
       delay(12);
      }
   
-    float thresh = (4095/3.3)*2;   //voltage level above 2V is seen as a peak
+    float thresh = (1024/3.3)*2;   //voltage level above 2V is seen as a peak
     // float restore = (4095/3.3) *1.65; // the peak area is left when the voltage goes below 1.65
     int flag = 0;
     int breath = 0;
@@ -149,7 +153,7 @@ void loop()
 //    Serial.flush();    
 //   }
 //  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW   
-  Handshake = 0;
+  Handshake = 1;
 }
 
 
